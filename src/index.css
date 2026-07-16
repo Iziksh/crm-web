@@ -1,0 +1,102 @@
+:root {
+  --color-bg: #f6f7fb;
+  --color-surface: #ffffff;
+  --color-border: #e6e9ef;
+  --color-text: #323338;
+  --color-text-muted: #676879;
+  --color-text-faint: #9699a6;
+
+  --color-brand: #0073ea;
+  --color-brand-hover: #0060c2;
+  --color-brand-soft: #eaf3ff;
+
+  /* Status palette — bright, saturated, one color = one meaning */
+  --status-new: #579bfc;
+  --status-new-soft: #eaf1ff;
+  --status-contacted: #fdab3d;
+  --status-contacted-soft: #fff3e2;
+  --status-qualified: #a25ddc;
+  --status-qualified-soft: #f6ecfc;
+  --status-won: #00c875;
+  --status-won-soft: #e6faf2;
+  --status-lost: #e2445c;
+  --status-lost-soft: #fce8ea;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.1);
+
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #14151a;
+    --color-surface: #1c1e26;
+    --color-border: #2c2f3a;
+    --color-text: #eceef2;
+    --color-text-muted: #a7abb8;
+    --color-text-faint: #767a88;
+    --color-brand-soft: #182a42;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--color-brand);
+  color: white;
+}
+
+.detail-panel {
+  margin-top: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+}
+
+.detail-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.detail-panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}

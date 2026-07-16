@@ -1,0 +1,31 @@
+.event-type-checkboxes {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.event-type-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+
+.subscription-filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.subscription-filter-row input {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  font-size: 13px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}

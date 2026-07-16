@@ -1,0 +1,161 @@
+.prd-overview {
+  background: var(--color-brand);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  max-width: 480px;
+  margin-bottom: 16px;
+}
+
+.prd-overview-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+.prd-overview hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  margin: 0;
+}
+
+.prd-overview .status-pill {
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.prd-warning {
+  background: var(--status-contacted-soft);
+  color: var(--status-contacted);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  max-width: 480px;
+}
+
+.prd-action-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.prd-body {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.prd-share-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.prd-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.prd-share-btn:hover {
+  filter: brightness(1.08);
+}
+
+.prd-share-btn:active {
+  transform: translateY(1px);
+}
+
+/* Sky blue — communication/mail */
+.prd-share-btn-email {
+  background: var(--status-new);
+}
+
+/* WhatsApp brand green */
+.prd-share-btn-whatsapp {
+  background: #25d366;
+}
+
+/* Cool teal — neutral, clean */
+.prd-share-btn-print {
+  background: #00b8a9;
+}
+
+/* Bright indigo — distinct for saving files */
+.prd-share-btn-download {
+  background: #6c5ce7;
+}
+
+.prd-preview {
+  flex: 1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+  max-width: 480px;
+}
+
+.prd-preview h3 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.prd-preview-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 20px;
+}
+
+.prd-preview-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.prd-signatures {
+  display: flex;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.prd-signature {
+  flex: 1;
+  text-align: center;
+}
+
+.prd-signature-line {
+  border-top: 1px solid var(--color-text-faint);
+  margin-bottom: 6px;
+}
+
+.prd-signature span {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.prd-whatsapp-hint {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}

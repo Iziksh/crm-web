@@ -1,0 +1,40 @@
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  color: white;
+}
+
+.status-pill[data-tone="blue"] {
+  background: var(--status-new);
+}
+.status-pill[data-tone="orange"] {
+  background: var(--status-contacted);
+}
+.status-pill[data-tone="purple"] {
+  background: var(--status-qualified);
+}
+.status-pill[data-tone="green"] {
+  background: var(--status-won);
+}
+.status-pill[data-tone="red"] {
+  background: var(--status-lost);
+}
+.status-pill[data-tone="gray"] {
+  background: var(--color-text-faint);
+}
+
+.pill-toggle {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+

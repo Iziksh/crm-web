@@ -1,0 +1,21 @@
+.cor-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.cor-filter-bar input[type="date"],
+.cor-filter-bar select {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  font-size: 13px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.cor-filter-bar span {
+  color: var(--color-text-faint);
+}

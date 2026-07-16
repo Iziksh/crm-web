@@ -1,0 +1,70 @@
+.data-table-wrap {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.data-table-row {
+  display: grid;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.data-table-row:first-child {
+  border-top: none;
+}
+
+.data-table-head {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-faint);
+  background: var(--color-bg);
+}
+
+.data-table-row:not(.data-table-head):hover {
+  background: var(--color-bg);
+}
+
+.data-table-row-clickable {
+  cursor: pointer;
+}
+
+.data-table-row-selected {
+  background: var(--color-brand-soft);
+}
+
+.data-table-row-selected:hover {
+  background: var(--color-brand-soft);
+}
+
+.data-table-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+}
+
+.icon-btn:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.icon-btn-danger:hover {
+  background: var(--status-lost-soft);
+  color: var(--status-lost);
+}

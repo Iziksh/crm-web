@@ -1,0 +1,64 @@
+.attachment-panel {
+  margin-top: 20px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+  grid-column: 1 / -1;
+}
+
+.attachment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.attachment-header h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.attachment-empty {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.attachment-list {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.attachment-row {
+  display: grid;
+  grid-template-columns: 2fr 0.7fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 14px;
+  font-size: 13px;
+  border-top: 1px solid var(--color-border);
+}
+
+.attachment-row:first-child {
+  border-top: none;
+}
+
+.attachment-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-meta {
+  color: var(--color-text-faint);
+}
+
+.attachment-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}

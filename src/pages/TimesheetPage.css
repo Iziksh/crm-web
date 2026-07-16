@@ -1,0 +1,140 @@
+.ts-user-picker {
+  margin-bottom: 16px;
+}
+
+.ts-user-picker select {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 14px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.ts-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.ts-export-group {
+  display: flex;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.ts-month-label {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ts-rejection-note {
+  background: var(--status-lost-soft);
+  color: var(--status-lost);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.ts-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.ts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ts-table th {
+  text-align: start;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  background: var(--color-bg);
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.ts-table td {
+  padding: 7px 12px;
+  border-top: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.ts-table tr.ts-weekend td {
+  background: var(--color-bg);
+}
+
+.ts-table tr.ts-holiday td {
+  background: var(--status-qualified-soft);
+}
+
+.ts-chip {
+  display: inline-block;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  margin-right: 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.ts-chip-holiday {
+  color: var(--status-qualified);
+  border-color: var(--status-qualified);
+}
+
+.ts-positive {
+  color: var(--status-won);
+  font-weight: 700;
+}
+
+.ts-negative {
+  color: var(--status-lost);
+  font-weight: 700;
+}
+
+.ts-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.ts-summary-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+}
+
+.ts-summary-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.ts-summary-value {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ts-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
