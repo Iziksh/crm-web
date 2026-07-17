@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Mail, Ban, CheckCircle, Shield, Trash2, Users, Pencil } from "lucide-react";
+import { Mail, Ban, CheckCircle, Shield, Trash2, Pencil } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { ListToolbar } from "../components/ListToolbar";
 import { DataTable, type Column } from "../components/DataTable";
@@ -17,7 +17,6 @@ import {
   disableUser,
   enableUser,
   changeUserRole,
-  changeUserManager,
   removeUser,
   type UserAdminResponse,
   type UserStatus,
@@ -44,11 +43,9 @@ export function UsersPage() {
   const [inviteRole, setInviteRole] = useState("ROLE_USER");
   const [changingRoleFor, setChangingRoleFor] = useState<UserAdminResponse | null>(null);
   const [newRole, setNewRole] = useState("ROLE_USER");
-  const [changingManagerFor, setChangingManagerFor] = useState<UserAdminResponse | null>(null);
-  const [newManagerId, setNewManagerId] = useState("");
   const [showAddUser, setShowAddUser] = useState(false);
   const [newUser, setNewUser] = useState({
-    username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "", managerId: "",
+    username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "",
   });
   const [editingUser, setEditingUser] = useState<UserAdminResponse | null>(null);
   const [editForm, setEditForm] = useState({ username: "", email: "", password: "" });
@@ -102,10 +99,6 @@ export function UsersPage() {
     onSuccess: () => { invalidate(); setChangingRoleFor(null); },
   });
   const removeMutation = useMutation({ mutationFn: removeUser, onSuccess: invalidate });
-  const managerMutation = useMutation({
-    mutationFn: (vars: { id: number; managerId: number | null }) => changeUserManager(vars.id, vars.managerId),
-    onSuccess: () => { invalidate(); setChangingManagerFor(null); },
-  });
   const createUserMutation = useMutation({
     mutationFn: async () => {
       const created = await createUser({
@@ -113,7 +106,7 @@ export function UsersPage() {
         email: newUser.email.trim(),
         password: newUser.password,
         roles: [newUser.role],
-        managerId: newUser.managerId ? Number(newUser.managerId) : null,
+        managerId: null,
       });
       if (newUser.workspaceId) {
         await addWorkspaceMember(Number(newUser.workspaceId), created.id);
@@ -123,7 +116,7 @@ export function UsersPage() {
     onSuccess: () => {
       invalidate();
       setShowAddUser(false);
-      setNewUser({ username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "", managerId: "" });
+      setNewUser({ username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "" });
     },
   });
   const updateUserMutation = useMutation({
@@ -176,11 +169,6 @@ export function UsersPage() {
             {!isSelf && (
               <button type="button" className="icon-btn" title="Change role" onClick={() => { setChangingRoleFor(u); setNewRole(u.roles[0] ?? "ROLE_USER"); }}>
                 <Shield size={15} />
-              </button>
-            )}
-            {!isSelf && (
-              <button type="button" className="icon-btn" title="Assign manager" onClick={() => { setChangingManagerFor(u); setNewManagerId(u.managerId != null ? String(u.managerId) : ""); }}>
-                <Users size={15} />
               </button>
             )}
             {!isSelf && (
@@ -253,39 +241,6 @@ export function UsersPage() {
         </Modal>
       )}
 
-      {changingManagerFor && (
-        <Modal
-          title={`Assign manager — ${changingManagerFor.username}`}
-          onClose={() => setChangingManagerFor(null)}
-          width={360}
-          footer={
-            <>
-              <button className="btn btn-secondary" onClick={() => setChangingManagerFor(null)}>Cancel</button>
-              <button
-                className="btn btn-primary"
-                disabled={managerMutation.isPending}
-                onClick={() => managerMutation.mutate({
-                  id: changingManagerFor.id,
-                  managerId: newManagerId ? Number(newManagerId) : null,
-                })}
-              >
-                {managerMutation.isPending ? "Saving…" : "Save"}
-              </button>
-            </>
-          }
-        >
-          <label className="field field-span-2">
-            <span>Manager</span>
-            <select value={newManagerId} onChange={(e) => setNewManagerId(e.target.value)}>
-              <option value="">No manager</option>
-              {users?.filter((u) => u.id !== changingManagerFor.id).map((u) => (
-                <option key={u.id} value={u.id}>{u.username}</option>
-              ))}
-            </select>
-          </label>
-        </Modal>
-      )}
-
       {showAddUser && (
         <Modal
           title="Add user"
@@ -320,15 +275,6 @@ export function UsersPage() {
                 <option value="">No workspace</option>
                 {workspaces?.map((w) => (
                   <option key={w.id} value={w.id}>{w.name}</option>
-                ))}
-              </select>
-            </label>
-            <label className="field field-span-2">
-              <span>Manager</span>
-              <select value={newUser.managerId} onChange={(e) => setNewUser({ ...newUser, managerId: e.target.value })}>
-                <option value="">No manager</option>
-                {users?.map((u) => (
-                  <option key={u.id} value={u.id}>{u.username}</option>
                 ))}
               </select>
             </label>
