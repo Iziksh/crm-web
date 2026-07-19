@@ -18,6 +18,7 @@ import {
   type OpportunityStage,
 } from "../api/opportunities";
 import { fetchAccounts } from "../api/accounts";
+import { useAccountScope } from "../context/AccountScopeContext";
 
 const GROUP_ORDER: OpportunityStage[] = ["PROSPECTING", "QUALIFICATION", "PROPOSAL", "NEGOTIATION", "WON", "LOST"];
 
@@ -58,7 +59,11 @@ export function OpportunitiesPage() {
   const [editing, setEditing] = useState<OpportunityResponse | null>(null);
   const [form, setForm] = useState<OpportunityRequest>(EMPTY);
 
-  const { data: opportunities, isLoading, isError } = useQuery({ queryKey: ["opportunities"], queryFn: fetchOpportunities });
+  const { accountId: scopedAccountId } = useAccountScope();
+  const { data: opportunities, isLoading, isError } = useQuery({
+    queryKey: ["opportunities", scopedAccountId],
+    queryFn: () => fetchOpportunities(scopedAccountId),
+  });
   const { data: accounts } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["opportunities"] });

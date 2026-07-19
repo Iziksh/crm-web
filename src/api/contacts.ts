@@ -1,4 +1,4 @@
-import { apiFetch, apiUpload, apiDownload } from "./client";
+import { apiFetch, apiUpload, apiDownload, buildQuery } from "./client";
 
 export interface ImportResultResponse {
   imported: number;
@@ -36,9 +36,8 @@ export interface ContactRequest {
   accountId: number | null;
 }
 
-export function fetchContacts(search: string) {
-  const q = search ? `?search=${encodeURIComponent(search)}&size=200` : "?size=200";
-  return apiFetch<ContactResponse[]>(`/contacts${q}`);
+export function fetchContacts(search: string, accountId?: number | null) {
+  return apiFetch<ContactResponse[]>(`/contacts${buildQuery({ search, accountId, size: 200 })}`);
 }
 
 export function createContact(req: ContactRequest) {

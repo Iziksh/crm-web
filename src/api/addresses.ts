@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 
 export type AddressType = "HOME" | "WORK" | "BILLING" | "SHIPPING" | "OTHER";
 
@@ -28,8 +28,8 @@ export interface AddressRequest {
   contactId: number | null;
 }
 
-export function fetchAddresses() {
-  return apiFetch<AddressResponse[]>("/addresses");
+export function fetchAddresses(accountId?: number | null) {
+  return apiFetch<AddressResponse[]>(`/addresses${buildQuery({ accountId })}`);
 }
 
 export function createAddress(req: AddressRequest) {

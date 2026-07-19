@@ -21,6 +21,7 @@ import {
   type QuoteStatus,
 } from "../api/quotes";
 import { fetchAccounts } from "../api/accounts";
+import { useAccountScope } from "../context/AccountScopeContext";
 import { fetchContacts } from "../api/contacts";
 import { fetchProducts } from "../api/products";
 
@@ -58,7 +59,11 @@ export function QuotesPage() {
   const [selected, setSelected] = useState<QuoteResponse | null>(null);
   const [form, setForm] = useState<QuoteRequest>(EMPTY);
 
-  const { data: quotes, isLoading, isError } = useQuery({ queryKey: ["quotes"], queryFn: fetchQuotes });
+  const { accountId: scopedAccountId } = useAccountScope();
+  const { data: quotes, isLoading, isError } = useQuery({
+    queryKey: ["quotes", scopedAccountId],
+    queryFn: () => fetchQuotes(scopedAccountId),
+  });
   const { data: accounts } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
   const { data: contacts } = useQuery({ queryKey: ["contacts", ""], queryFn: () => fetchContacts("") });
   const { data: products } = useQuery({ queryKey: ["products", ""], queryFn: () => fetchProducts("") });

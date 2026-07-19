@@ -8,9 +8,11 @@ import { Modal } from "../components/Modal";
 import { Field, SelectField } from "../components/FormField";
 import { StatusPill } from "../components/StatusPill";
 import { useAuth } from "../context/AuthContext";
-import { hasEffectiveRole } from "../lib/roles";
+import { useAccountScope } from "../context/AccountScopeContext";
+import { hasEffectiveRole, isGlobalAdmin } from "../lib/roles";
 import { fetchWorkspaces, addWorkspaceMember } from "../api/workspaces";
 import { fetchAllUsers, createUser, updateUser } from "../api/users";
+import { fetchAccounts } from "../api/accounts";
 import {
   fetchWorkspaceUsers,
   inviteUser,
@@ -35,8 +37,10 @@ const STATUS_TONE = { INVITED: "gray", ACTIVE: "green", DISABLED: "orange" } as 
 export function UsersPage() {
   const { user: currentUser } = useAuth();
   const queryClient = useQueryClient();
-  // Admin-level roles see every user system-wide, not just their own workspace.
+  // Admin-tier users always see every user system-wide, regardless of any account assigned —
+  // an account on an admin is a label, not a scope.
   const isSuperAdmin = hasEffectiveRole(currentUser?.roles, "ROLE_ADMIN");
+  const { accountId: scopedAccountId } = useAccountScope();
 
   const [showInvite, setShowInvite] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -45,15 +49,21 @@ export function UsersPage() {
   const [newRole, setNewRole] = useState("ROLE_USER");
   const [showAddUser, setShowAddUser] = useState(false);
   const [newUser, setNewUser] = useState({
-    username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "",
+    username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "", accountId: "",
   });
   const [editingUser, setEditingUser] = useState<UserAdminResponse | null>(null);
-  const [editForm, setEditForm] = useState({ username: "", email: "", password: "" });
+  const [editForm, setEditForm] = useState({ username: "", email: "", password: "", accountId: "" });
+  // Only a global-admin role (ADMIN/SUPER_ADMIN) skips the account in the Add User form.
+  // COMPANY_ADMIN is account-scoped, so it still requires one.
+  const newUserIsAdmin = isGlobalAdmin([newUser.role]);
 
   // Super admins operate across every workspace (mirrors the Vaadin UsersView, which fetches all
   // users system-wide for this role instead of scoping to a single workspace). Fetched
   // unconditionally now — the super-admin "Add user" modal needs the workspace picker too.
   const { data: workspaces } = useQuery({ queryKey: ["workspaces"], queryFn: fetchWorkspaces });
+  // Deliberately unscoped: an admin must be able to assign a new user to any account,
+  // not just the one currently selected in the header.
+  const { data: accountOptions } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
   const myWorkspace = workspaces?.find((w) => w.memberNames.includes(currentUser?.username ?? ""));
 
   const { data: workspaceUsers, isLoading: loadingWorkspaceUsers, isError: errorWorkspaceUsers } = useQuery({
@@ -63,8 +73,8 @@ export function UsersPage() {
   });
 
   const { data: allUsers, isLoading: loadingAllUsers, isError: errorAllUsers } = useQuery({
-    queryKey: ["all-users-admin"],
-    queryFn: fetchAllUsers,
+    queryKey: ["all-users-admin", scopedAccountId],
+    queryFn: () => fetchAllUsers(scopedAccountId),
     enabled: isSuperAdmin,
   });
 
@@ -78,6 +88,8 @@ export function UsersPage() {
         workspaceId: null,
         managerId: u.managerId,
         managerName: u.managerName,
+        accountId: u.accountId,
+        accountName: u.accountName,
       }))
     : workspaceUsers;
 
@@ -107,6 +119,7 @@ export function UsersPage() {
         password: newUser.password,
         roles: [newUser.role],
         managerId: null,
+        accountId: newUserIsAdmin ? null : Number(newUser.accountId),
       });
       if (newUser.workspaceId) {
         await addWorkspaceMember(Number(newUser.workspaceId), created.id);
@@ -116,7 +129,7 @@ export function UsersPage() {
     onSuccess: () => {
       invalidate();
       setShowAddUser(false);
-      setNewUser({ username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "" });
+      setNewUser({ username: "", email: "", password: "", role: "ROLE_USER", workspaceId: "", accountId: "" });
     },
   });
   const updateUserMutation = useMutation({
@@ -126,6 +139,7 @@ export function UsersPage() {
       password: editForm.password,
       roles: editingUser!.roles,
       managerId: editingUser!.managerId,
+      accountId: editForm.accountId ? Number(editForm.accountId) : undefined,
     }),
     onSuccess: () => { invalidate(); setEditingUser(null); },
   });
@@ -134,6 +148,7 @@ export function UsersPage() {
     { header: "Username", render: (u) => <strong>{u.username}</strong> },
     { header: "Email", render: (u) => u.email },
     { header: "Roles", render: (u) => u.roles.map((r) => r.replace("ROLE_", "")).join(", ") },
+    { header: "Account", render: (u) => u.accountName ?? "—" },
     { header: "Manager", render: (u) => u.managerName ?? "—" },
     { header: "Status", render: (u) => <StatusPill label={u.status} tone={STATUS_TONE[u.status]} /> },
     {
@@ -162,7 +177,7 @@ export function UsersPage() {
               type="button"
               className="icon-btn"
               title="Edit"
-              onClick={() => { setEditingUser(u); setEditForm({ username: u.username, email: u.email, password: "" }); }}
+              onClick={() => { setEditingUser(u); setEditForm({ username: u.username, email: u.email, password: "", accountId: "" }); }}
             >
               <Pencil size={15} />
             </button>
@@ -250,7 +265,7 @@ export function UsersPage() {
               <button className="btn btn-secondary" onClick={() => setShowAddUser(false)}>Cancel</button>
               <button
                 className="btn btn-primary"
-                disabled={!newUser.username.trim() || !newUser.email.trim() || createUserMutation.isPending}
+                disabled={!newUser.username.trim() || !newUser.email.trim() || (!newUserIsAdmin && !newUser.accountId) || createUserMutation.isPending}
                 onClick={() => createUserMutation.mutate()}
               >
                 {createUserMutation.isPending ? "Creating…" : "Create user"}
@@ -269,6 +284,18 @@ export function UsersPage() {
               span2
             />
             <SelectField label="Role" value={newUser.role} onChange={(v) => setNewUser({ ...newUser, role: v })} options={ROLE_OPTIONS} />
+            {/* Admin-tier users are global and accountless — the account field only applies to others. */}
+            {!newUserIsAdmin && (
+              <label className="field">
+                <span>Account *</span>
+                <select value={newUser.accountId} onChange={(e) => setNewUser({ ...newUser, accountId: e.target.value })}>
+                  <option value="">Select an account…</option>
+                  {accountOptions?.map((a) => (
+                    <option key={a.id} value={a.id}>{a.name}</option>
+                  ))}
+                </select>
+              </label>
+            )}
             <label className="field">
               <span>Workspace</span>
               <select value={newUser.workspaceId} onChange={(e) => setNewUser({ ...newUser, workspaceId: e.target.value })}>
@@ -310,6 +337,19 @@ export function UsersPage() {
               onChange={(v) => setEditForm({ ...editForm, password: v })}
               span2
             />
+            {/* Offered for any account-scoped user without an account — including COMPANY_ADMIN.
+                Only global admins (ADMIN, SUPER_ADMIN) are accountless and skip the picker. */}
+            {editingUser.accountId == null && !isGlobalAdmin(editingUser.roles) && (
+              <label className="field field-span-2">
+                <span>Assign account</span>
+                <select value={editForm.accountId} onChange={(e) => setEditForm({ ...editForm, accountId: e.target.value })}>
+                  <option value="">Select an account…</option>
+                  {accountOptions?.map((a) => (
+                    <option key={a.id} value={a.id}>{a.name}</option>
+                  ))}
+                </select>
+              </label>
+            )}
           </div>
           <p className="field-hint" style={{ margin: "8px 2px 0" }}>Leave password blank to keep it unchanged. Role and manager are edited separately.</p>
         </Modal>

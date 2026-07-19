@@ -7,7 +7,7 @@ import "./DashboardPage.css";
 
 export function DashboardPage() {
   const { user } = useAuth();
-  const { data: leads, isLoading, isError } = useQuery({ queryKey: ["leads"], queryFn: fetchLeads });
+  const { data: leads, isLoading, isError } = useQuery({ queryKey: ["leads"], queryFn: () => fetchLeads() });
 
   const stats = leads && [
     { label: "Total leads", value: leads.length, icon: Users, color: "var(--status-new)" },

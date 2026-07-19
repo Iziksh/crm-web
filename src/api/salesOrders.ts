@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 import type { LineItemRequest, LineItemResponse } from "./quotes";
 
 export type SalesOrderStatus = "PENDING" | "CONFIRMED" | "DELIVERED" | "CANCELLED";
@@ -30,8 +30,8 @@ export interface SalesOrderRequest {
   contactId: number | null;
 }
 
-export function fetchSalesOrders() {
-  return apiFetch<SalesOrderResponse[]>("/sales-orders?size=200");
+export function fetchSalesOrders(accountId?: number | null) {
+  return apiFetch<SalesOrderResponse[]>(`/sales-orders${buildQuery({ accountId, size: 200 })}`);
 }
 
 export function createSalesOrder(req: SalesOrderRequest) {

@@ -35,3 +35,13 @@ export function hasCompanyWideAttendanceAccess(roles: string[] | undefined): boo
   if (!roles) return false;
   return hasEffectiveRole(roles, "ROLE_ADMIN") || roles.includes("ROLE_HR_MANAGER");
 }
+
+/**
+ * Global (platform-wide) admins that stay accountless: ADMIN and SUPER_ADMIN. Mirrors
+ * UserService.isGlobalAdmin. Uses a literal role check, NOT the hierarchy — COMPANY_ADMIN
+ * implies ADMIN but is company-scoped and must carry an account, so it must NOT count here.
+ */
+export function isGlobalAdmin(roles: string[] | undefined): boolean {
+  if (!roles) return false;
+  return roles.includes("ROLE_ADMIN") || roles.includes("ROLE_SUPER_ADMIN");
+}

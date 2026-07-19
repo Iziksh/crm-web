@@ -7,6 +7,9 @@ interface AuthUser {
   email: string;
   roles: string[];
   workspaceId: number | null;
+  /** The account this user is locked to. Null for admins, who choose their own scope. */
+  accountId: number | null;
+  accountName: string | null;
   status: string | null;
   createdAt: string | null;
 }
@@ -28,6 +31,8 @@ interface MeResponse {
   email: string;
   roles: string[];
   workspaceId: number | null;
+  accountId: number | null;
+  accountName: string | null;
   status: string;
   createdAt: string;
 }
@@ -52,7 +57,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const me = await apiFetch<MeResponse>("/auth/me");
       setUser((current) =>
         current
-          ? { ...current, id: me.id, roles: me.roles, workspaceId: me.workspaceId, status: me.status, createdAt: me.createdAt }
+          ? {
+              ...current,
+              id: me.id,
+              roles: me.roles,
+              workspaceId: me.workspaceId,
+              accountId: me.accountId,
+              accountName: me.accountName,
+              status: me.status,
+              createdAt: me.createdAt,
+            }
           : current,
       );
     } catch {
@@ -61,7 +75,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function signIn(token: string, basicUser: { username: string; email: string }) {
-    const user: AuthUser = { id: null, roles: [], workspaceId: null, status: null, createdAt: null, ...basicUser };
+    const user: AuthUser = {
+      id: null, roles: [], workspaceId: null, accountId: null, accountName: null,
+      status: null, createdAt: null, ...basicUser,
+    };
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ token, user }));
     setAuthToken(token);
     setUser(user);

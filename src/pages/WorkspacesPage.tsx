@@ -27,7 +27,7 @@ export function WorkspacesPage() {
   const [memberError, setMemberError] = useState<string | null>(null);
 
   const { data: workspaces, isLoading, isError } = useQuery({ queryKey: ["workspaces"], queryFn: fetchWorkspaces });
-  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: fetchAllUsers });
+  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: () => fetchAllUsers() });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["workspaces"] });
   const createMutation = useMutation({ mutationFn: createWorkspace, onSuccess: () => { invalidate(); setShowModal(false); setName(""); setDescription(""); } });

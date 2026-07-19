@@ -22,6 +22,13 @@
   gap: 16px;
 }
 
+.app-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .app-header h1 {
   margin: 0;
   font-size: 24px;

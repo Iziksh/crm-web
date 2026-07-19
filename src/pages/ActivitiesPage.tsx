@@ -25,6 +25,7 @@ import {
   type ActivityPriority,
 } from "../api/activities";
 import { fetchAccounts } from "../api/accounts";
+import { useAccountScope } from "../context/AccountScopeContext";
 import { fetchContacts } from "../api/contacts";
 import "./ActivitiesPage.css";
 
@@ -74,7 +75,11 @@ export function ActivitiesPage() {
   const [noteText, setNoteText] = useState("");
   const [form, setForm] = useState<ActivityRequest>(EMPTY);
 
-  const { data: activities, isLoading, isError } = useQuery({ queryKey: ["activities"], queryFn: fetchActivities });
+  const { accountId: scopedAccountId } = useAccountScope();
+  const { data: activities, isLoading, isError } = useQuery({
+    queryKey: ["activities", scopedAccountId],
+    queryFn: () => fetchActivities(scopedAccountId),
+  });
   const { data: accounts } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
   const { data: contacts } = useQuery({ queryKey: ["contacts", ""], queryFn: () => fetchContacts("") });
 

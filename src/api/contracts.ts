@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 
 export type ContractStatus = "DRAFT" | "ACTIVE" | "EXPIRED" | "TERMINATED";
 
@@ -33,8 +33,8 @@ export interface ContractRequest {
   contactId: number | null;
 }
 
-export function fetchContracts() {
-  return apiFetch<ContractResponse[]>("/contracts?size=200");
+export function fetchContracts(accountId?: number | null) {
+  return apiFetch<ContractResponse[]>(`/contracts${buildQuery({ accountId, size: 200 })}`);
 }
 
 export function createContract(req: ContractRequest) {

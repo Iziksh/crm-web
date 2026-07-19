@@ -11,6 +11,9 @@ export interface UserAdminResponse {
   workspaceId: number | null;
   managerId: number | null;
   managerName: string | null;
+  /** Optional: only the /users admin listing resolves these, not /admin/users. */
+  accountId?: number | null;
+  accountName?: string | null;
 }
 
 export function fetchWorkspaceUsers(workspaceId: number) {

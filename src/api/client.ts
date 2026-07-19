@@ -8,6 +8,37 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Extracts a human-readable message from a thrown error. Backend errors arrive as an ApiError
+ * whose message is the raw JSON ErrorResponse body ({ message, ... }); pull the `message` field
+ * out of it, falling back to the raw text and then to a generic message.
+ */
+export function apiErrorMessage(err: unknown, fallback = "Something went wrong."): string {
+  if (err instanceof ApiError) {
+    try {
+      const parsed = JSON.parse(err.message);
+      if (parsed && typeof parsed.message === "string" && parsed.message.trim()) return parsed.message;
+    } catch {
+      /* body wasn't JSON — fall through to the raw text */
+    }
+    return err.message?.trim() || fallback;
+  }
+  return fallback;
+}
+
+/**
+ * Builds a query string, dropping empty/absent values. Used so list endpoints can take an
+ * optional `accountId` (the global account scope) without every caller hand-rolling the URL.
+ */
+export function buildQuery(params: Record<string, string | number | null | undefined>): string {
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== null && value !== undefined && value !== "") search.set(key, String(value));
+  }
+  const query = search.toString();
+  return query ? `?${query}` : "";
+}
+
 let authToken: string | null = null;
 
 export function setAuthToken(token: string | null) {

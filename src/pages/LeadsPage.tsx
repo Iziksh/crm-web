@@ -5,6 +5,7 @@ import { Board, type BoardGroup } from "../components/Board";
 import type { Column } from "../components/DataTable";
 import { Avatar } from "../components/Avatar";
 import { LEAD_STATUS_META } from "../lib/statusMeta";
+import { useAccountScope } from "../context/AccountScopeContext";
 import "./LeadsPage.css";
 
 const GROUP_ORDER: LeadStatus[] = ["NEW", "CONTACTED", "QUALIFIED", "WON", "LOST"];
@@ -54,7 +55,11 @@ const columns: Column<LeadResponse>[] = [
 ];
 
 export function LeadsPage() {
-  const { data: leads, isLoading, isError } = useQuery({ queryKey: ["leads"], queryFn: fetchLeads });
+  const { accountId: scopedAccountId } = useAccountScope();
+  const { data: leads, isLoading, isError } = useQuery({
+    queryKey: ["leads", scopedAccountId],
+    queryFn: () => fetchLeads(scopedAccountId),
+  });
 
   return (
     <Layout title="Leads" subtitle="Track and qualify incoming leads through your pipeline.">

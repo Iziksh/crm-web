@@ -21,6 +21,7 @@ import {
   type SalesOrderStatus,
 } from "../api/salesOrders";
 import { fetchAccounts } from "../api/accounts";
+import { useAccountScope } from "../context/AccountScopeContext";
 import { fetchContacts } from "../api/contacts";
 import { fetchQuotes } from "../api/quotes";
 import { fetchProducts } from "../api/products";
@@ -58,10 +59,14 @@ export function SalesOrdersPage() {
   const [selected, setSelected] = useState<SalesOrderResponse | null>(null);
   const [form, setForm] = useState<SalesOrderRequest>(EMPTY);
 
-  const { data: orders, isLoading, isError } = useQuery({ queryKey: ["sales-orders"], queryFn: fetchSalesOrders });
+  const { accountId: scopedAccountId } = useAccountScope();
+  const { data: orders, isLoading, isError } = useQuery({
+    queryKey: ["sales-orders", scopedAccountId],
+    queryFn: () => fetchSalesOrders(scopedAccountId),
+  });
   const { data: accounts } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
   const { data: contacts } = useQuery({ queryKey: ["contacts", ""], queryFn: () => fetchContacts("") });
-  const { data: quotes } = useQuery({ queryKey: ["quotes"], queryFn: fetchQuotes });
+  const { data: quotes } = useQuery({ queryKey: ["quotes"], queryFn: () => fetchQuotes() });
   const { data: products } = useQuery({ queryKey: ["products", ""], queryFn: () => fetchProducts("") });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales-orders"] });

@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 
 export type LeadStatus = "NEW" | "CONTACTED" | "QUALIFIED" | "WON" | "LOST";
 
@@ -24,6 +24,6 @@ export interface LeadResponse {
   createdAt: string;
 }
 
-export async function fetchLeads(): Promise<LeadResponse[]> {
-  return apiFetch<LeadResponse[]>("/leads?size=100");
+export async function fetchLeads(accountId?: number | null): Promise<LeadResponse[]> {
+  return apiFetch<LeadResponse[]>(`/leads${buildQuery({ accountId, size: 100 })}`);
 }

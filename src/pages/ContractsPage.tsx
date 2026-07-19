@@ -16,6 +16,7 @@ import {
   type ContractStatus,
 } from "../api/contracts";
 import { fetchAccounts } from "../api/accounts";
+import { useAccountScope } from "../context/AccountScopeContext";
 import { fetchContacts } from "../api/contacts";
 import { fetchSalesOrders } from "../api/salesOrders";
 
@@ -53,10 +54,14 @@ export function ContractsPage() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<ContractRequest>(EMPTY);
 
-  const { data: contracts, isLoading, isError } = useQuery({ queryKey: ["contracts"], queryFn: fetchContracts });
+  const { accountId: scopedAccountId } = useAccountScope();
+  const { data: contracts, isLoading, isError } = useQuery({
+    queryKey: ["contracts", scopedAccountId],
+    queryFn: () => fetchContracts(scopedAccountId),
+  });
   const { data: accounts } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
   const { data: contacts } = useQuery({ queryKey: ["contacts", ""], queryFn: () => fetchContacts("") });
-  const { data: orders } = useQuery({ queryKey: ["sales-orders"], queryFn: fetchSalesOrders });
+  const { data: orders } = useQuery({ queryKey: ["sales-orders"], queryFn: () => fetchSalesOrders() });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["contracts"] });
   const createMutation = useMutation({ mutationFn: createContract, onSuccess: () => { invalidate(); setShowModal(false); } });

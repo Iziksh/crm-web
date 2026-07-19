@@ -6,6 +6,7 @@ import { ListToolbar } from "../components/ListToolbar";
 import { DataTable, type Column } from "../components/DataTable";
 import { Modal } from "../components/Modal";
 import { Field, SelectField } from "../components/FormField";
+import { StatusPill, type PillTone } from "../components/StatusPill";
 import {
   fetchSavedSearches,
   createSavedSearch,
@@ -25,6 +26,15 @@ const SCOPE_OPTIONS: { value: SavedSearchScope; label: string }[] = [
   { value: "OPPORTUNITY", label: "Opportunity" },
   { value: "ACTIVITY", label: "Activity" },
 ];
+
+const SCOPE_TONE: Record<string, PillTone> = {
+  ACCOUNT: "blue",
+  CONTACT: "purple",
+  ADDRESS: "gray",
+  LEAD: "orange",
+  OPPORTUNITY: "green",
+  ACTIVITY: "red",
+};
 
 const EMPTY: SavedSearchRequest = { name: "", scope: "", filterJson: "" };
 
@@ -68,7 +78,7 @@ export function SavedSearchesPage() {
 
   const columns: Column<SavedSearchResponse>[] = [
     { header: "Name", render: (s) => <strong>{s.name}</strong> },
-    { header: "Scope", render: (s) => s.scope ?? "—" },
+    { header: "Scope", render: (s) => s.scope ? <StatusPill label={s.scope} tone={SCOPE_TONE[s.scope] ?? "gray"} /> : "—" },
     {
       header: "Actions",
       width: "40px",

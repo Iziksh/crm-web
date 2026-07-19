@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 
 export type ActivityType = "BUG" | "FEATURE" | "TASK" | "MEETING" | "CALL" | "EMAIL" | "SALES_VISIT" | "MAILING" | "SMS" | "ABSENCE";
 export type ActivityStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
@@ -40,8 +40,8 @@ export interface ActivityRequest {
   contactId: number | null;
 }
 
-export function fetchActivities() {
-  return apiFetch<ActivityResponse[]>("/activities?size=200");
+export function fetchActivities(accountId?: number | null) {
+  return apiFetch<ActivityResponse[]>(`/activities${buildQuery({ accountId, size: 200 })}`);
 }
 
 export function fetchCalendarActivities(from: string, to: string) {

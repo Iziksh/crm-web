@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Layout } from "../components/Layout";
 import { DataTable, type Column } from "../components/DataTable";
+import { StatusPill } from "../components/StatusPill";
+import { LEAD_STATUS_META, OPPORTUNITY_STAGE_META, QUOTE_STATUS_META, type StatusMeta } from "../lib/statusMeta";
 import { fetchLeadForecast, fetchOpportunityForecast, fetchQuoteForecast, type ForecastByStageResponse, type ForecastSummaryResponse } from "../api/forecast";
 import "./ForecastPage.css";
 
@@ -17,9 +19,16 @@ function formatAmount(v: number | null) {
   return v == null ? "—" : v.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
-function ForecastTable({ summary, showWeighted }: { summary: ForecastSummaryResponse; showWeighted: boolean }) {
+function ForecastTable({ summary, showWeighted, stageMeta }: { summary: ForecastSummaryResponse; showWeighted: boolean; stageMeta: Record<string, StatusMeta> }) {
   const columns: Column<ForecastByStageResponse>[] = [
-    { header: "Stage / Status", render: (r) => r.stage, width: "2fr" },
+    {
+      header: "Stage / Status",
+      render: (r) => {
+        const meta = stageMeta[r.stage];
+        return meta ? <StatusPill label={meta.label} tone={meta.tone} /> : r.stage;
+      },
+      width: "2fr",
+    },
     { header: "Count", render: (r) => r.count },
     { header: "Amount", render: (r) => formatAmount(r.amount) },
     ...(showWeighted ? [{ header: "Weighted", render: (r: ForecastByStageResponse) => formatAmount(r.weighted) } as Column<ForecastByStageResponse>] : []),
@@ -74,9 +83,9 @@ export function ForecastPage() {
         ))}
       </div>
 
-      {tab === "leads" && leadForecast && <ForecastTable summary={leadForecast} showWeighted={false} />}
-      {tab === "opportunities" && opportunityForecast && <ForecastTable summary={opportunityForecast} showWeighted />}
-      {tab === "quotes" && quoteForecast && <ForecastTable summary={quoteForecast} showWeighted={false} />}
+      {tab === "leads" && leadForecast && <ForecastTable summary={leadForecast} showWeighted={false} stageMeta={LEAD_STATUS_META} />}
+      {tab === "opportunities" && opportunityForecast && <ForecastTable summary={opportunityForecast} showWeighted stageMeta={OPPORTUNITY_STAGE_META} />}
+      {tab === "quotes" && quoteForecast && <ForecastTable summary={quoteForecast} showWeighted={false} stageMeta={QUOTE_STATUS_META} />}
     </Layout>
   );
 }

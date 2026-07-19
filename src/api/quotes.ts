@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 
 export type QuoteStatus = "DRAFT" | "SENT" | "WON" | "LOST" | "EXPIRED";
 
@@ -46,8 +46,8 @@ export interface QuoteRequest {
   contactId: number | null;
 }
 
-export function fetchQuotes() {
-  return apiFetch<QuoteResponse[]>("/quotes?size=200");
+export function fetchQuotes(accountId?: number | null) {
+  return apiFetch<QuoteResponse[]>(`/quotes${buildQuery({ accountId, size: 200 })}`);
 }
 
 export function createQuote(req: QuoteRequest) {

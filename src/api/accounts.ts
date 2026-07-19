@@ -1,7 +1,13 @@
-import { apiFetch, apiUpload, apiDownload } from "./client";
+import { apiFetch, apiUpload, apiDownload, buildQuery } from "./client";
 import type { ImportResultResponse } from "./contacts";
 
 export type AccountType = "PROSPECT" | "CUSTOMER" | "PARTNER" | "VENDOR";
+
+export interface AccountAddonSummary {
+  id: number;
+  name: string;
+  expiryDate: string | null;
+}
 
 export interface AccountResponse {
   id: number;
@@ -13,6 +19,7 @@ export interface AccountResponse {
   address: string | null;
   type: AccountType | null;
   notes: string | null;
+  addons: AccountAddonSummary[];
 }
 
 export interface AccountRequest {
@@ -26,9 +33,8 @@ export interface AccountRequest {
   notes: string;
 }
 
-export function fetchAccounts(search: string) {
-  const q = search ? `?search=${encodeURIComponent(search)}&size=200` : "?size=200";
-  return apiFetch<AccountResponse[]>(`/accounts${q}`);
+export function fetchAccounts(search: string, accountId?: number | null) {
+  return apiFetch<AccountResponse[]>(`/accounts${buildQuery({ search, accountId, size: 200 })}`);
 }
 
 export function fetchAccount(id: number) {

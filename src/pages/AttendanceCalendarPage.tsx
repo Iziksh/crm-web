@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { useAuth } from "../context/AuthContext";
 import { hasCompanyWideAttendanceAccess } from "../lib/roles";
+import { StatusPill } from "../components/StatusPill";
+import { ATTENDANCE_REPORT_TYPE_META } from "../lib/statusMeta";
 import { fetchMonthlyCalendar } from "../api/timetracking";
 import { fetchAllUsers } from "../api/users";
 import "./AttendanceCalendarPage.css";
@@ -26,7 +28,7 @@ export function AttendanceCalendarPage() {
   });
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
-  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: fetchAllUsers, enabled: isAdmin });
+  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: () => fetchAllUsers(), enabled: isAdmin });
   const targetUserId = isAdmin ? selectedUserId : user?.id ?? null;
 
   const { data: calendar, isLoading, isError } = useQuery({
@@ -92,7 +94,10 @@ export function AttendanceCalendarPage() {
                           <div className="cal-day-report" key={r.id}>
                             {r.reportType === "PRESENCE" && r.entryTime && r.exitTime
                               ? `${r.entryTime.slice(0, 5)}–${r.exitTime.slice(0, 5)}`
-                              : r.reportType}
+                              : <StatusPill
+                                  label={ATTENDANCE_REPORT_TYPE_META[r.reportType]?.label ?? r.reportType}
+                                  tone={ATTENDANCE_REPORT_TYPE_META[r.reportType]?.tone ?? "gray"}
+                                />}
                           </div>
                         ))}
                       </div>

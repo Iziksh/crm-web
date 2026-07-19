@@ -4,7 +4,8 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { Modal } from "../components/Modal";
 import { Field, SelectField } from "../components/FormField";
-import { fetchCalendarActivities, createActivity, type ActivityResponse, type ActivityType, type ActivityPriority } from "../api/activities";
+import { StatusPill, type PillTone } from "../components/StatusPill";
+import { fetchCalendarActivities, createActivity, type ActivityResponse, type ActivityType, type ActivityStatus, type ActivityPriority } from "../api/activities";
 import "./CalendarPage.css";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -20,6 +21,21 @@ const CHIP_COLOR: Partial<Record<ActivityType, string>> = {
   CALL: "var(--status-qualified)",
   EMAIL: "#00838f",
 };
+
+const TYPE_TONE: Record<ActivityType, PillTone> = {
+  MEETING: "blue",
+  CALL: "purple",
+  TASK: "orange",
+  SALES_VISIT: "green",
+  BUG: "red",
+  FEATURE: "purple",
+  EMAIL: "gray",
+  MAILING: "gray",
+  SMS: "gray",
+  ABSENCE: "gray",
+};
+const STATUS_TONE: Record<ActivityStatus, PillTone> = { OPEN: "blue", IN_PROGRESS: "orange", RESOLVED: "green", CLOSED: "gray" };
+const PRIORITY_TONE: Record<ActivityPriority, PillTone> = { LOW: "gray", MEDIUM: "blue", HIGH: "orange", CRITICAL: "red" };
 
 function pad(n: number) {
   return n.toString().padStart(2, "0");
@@ -161,9 +177,9 @@ export function CalendarPage() {
       {detailActivity && (
         <Modal title={detailActivity.title} onClose={() => setDetailActivity(null)} width={380}>
           {detailActivity.description && <p>{detailActivity.description}</p>}
-          <p><strong>Type:</strong> {detailActivity.type}</p>
-          <p><strong>Status:</strong> {detailActivity.status}</p>
-          <p><strong>Priority:</strong> {detailActivity.priority}</p>
+          <p><strong>Type:</strong> {detailActivity.type && <StatusPill label={detailActivity.type.replace("_", " ")} tone={TYPE_TONE[detailActivity.type]} />}</p>
+          <p><strong>Status:</strong> <StatusPill label={detailActivity.status.replace("_", " ")} tone={STATUS_TONE[detailActivity.status]} /></p>
+          <p><strong>Priority:</strong> {detailActivity.priority && <StatusPill label={detailActivity.priority} tone={PRIORITY_TONE[detailActivity.priority]} />}</p>
           <p><strong>Assigned to:</strong> {detailActivity.assignedToName ?? "—"}</p>
         </Modal>
       )}

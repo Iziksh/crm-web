@@ -144,7 +144,11 @@
   background: var(--status-lost-soft);
   color: var(--status-lost);
 }
-.btn-danger:hover {
+.btn-danger:hover:not(:disabled) {
   background: var(--status-lost);
   color: white;
+}
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: default;
 }

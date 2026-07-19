@@ -24,7 +24,7 @@ export function MonthlySummaryPage() {
   });
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
-  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: fetchAllUsers, enabled: isAdmin });
+  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: () => fetchAllUsers(), enabled: isAdmin });
   const { data: directReports } = useQuery({ queryKey: ["my-direct-reports"], queryFn: fetchMyDirectReports });
   const pickerOptions = isAdmin ? allUsers : directReports;
 

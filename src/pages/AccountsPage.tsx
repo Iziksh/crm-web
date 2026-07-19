@@ -8,7 +8,8 @@ import { Field, SelectField } from "../components/FormField";
 import { AttachmentPanel } from "../components/AttachmentPanel";
 import { AddonsPanel } from "../components/AddonsPanel";
 import { StatusPill } from "../components/StatusPill";
-import { ACCOUNT_TYPE_META } from "../lib/statusMeta";
+import { ACCOUNT_TYPE_META, addonMeta } from "../lib/statusMeta";
+import { useAccountScope } from "../context/AccountScopeContext";
 import {
   fetchAccounts,
   createAccount,
@@ -19,7 +20,9 @@ import {
   type AccountResponse,
   type AccountRequest,
   type AccountType,
+  type AccountAddonSummary,
 } from "../api/accounts";
+import "./AccountsPage.css";
 
 const EMPTY: AccountRequest = {
   name: "",
@@ -34,6 +37,12 @@ const EMPTY: AccountRequest = {
 
 const TYPE_OPTIONS = Object.entries(ACCOUNT_TYPE_META).map(([value, meta]) => ({ value: value as AccountType, label: meta.label }));
 
+/** An addon counts as active while it has no expiry date or expires today or later. */
+function activeAddons(addons: AccountAddonSummary[]) {
+  const today = new Date().toISOString().slice(0, 10);
+  return addons.filter((a) => !a.expiryDate || a.expiryDate >= today);
+}
+
 export function AccountsPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -42,9 +51,11 @@ export function AccountsPage() {
   const [activeTab, setActiveTab] = useState<"details" | "addons">("details");
   const [form, setForm] = useState<AccountRequest>(EMPTY);
 
+  const { accountId: scopedAccountId } = useAccountScope();
+
   const { data: accounts, isLoading, isError } = useQuery({
-    queryKey: ["accounts", search],
-    queryFn: () => fetchAccounts(search),
+    queryKey: ["accounts", search, scopedAccountId],
+    queryFn: () => fetchAccounts(search, scopedAccountId),
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["accounts"] });
@@ -96,6 +107,21 @@ export function AccountsPage() {
     { header: "Name", render: (a) => <strong>{a.name}</strong> },
     { header: "Industry", render: (a) => a.industry ?? "—" },
     { header: "Type", render: (a) => (a.type ? <StatusPill label={ACCOUNT_TYPE_META[a.type].label} tone={ACCOUNT_TYPE_META[a.type].tone} /> : "—") },
+    {
+      header: "Add-ons",
+      width: "1.4fr",
+      render: (a) => {
+        const active = activeAddons(a.addons);
+        if (active.length === 0) return "—";
+        return (
+          <span className="account-addons">
+            {active.map((addon) => (
+              <StatusPill key={addon.id} label={addon.name} tone={addonMeta(addon.name).tone} />
+            ))}
+          </span>
+        );
+      },
+    },
     { header: "Email", render: (a) => a.email ?? "—" },
     { header: "Phone", render: (a) => a.phone ?? "—" },
   ];

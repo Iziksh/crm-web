@@ -17,6 +17,7 @@ import {
   type AddressType,
 } from "../api/addresses";
 import { fetchAccounts } from "../api/accounts";
+import { useAccountScope } from "../context/AccountScopeContext";
 import { fetchContacts } from "../api/contacts";
 
 const TYPE_OPTIONS: { value: AddressType; label: string }[] = [
@@ -44,7 +45,11 @@ export function AddressesPage() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<AddressRequest>(EMPTY);
 
-  const { data: addresses, isLoading, isError } = useQuery({ queryKey: ["addresses"], queryFn: fetchAddresses });
+  const { accountId: scopedAccountId } = useAccountScope();
+  const { data: addresses, isLoading, isError } = useQuery({
+    queryKey: ["addresses", scopedAccountId],
+    queryFn: () => fetchAddresses(scopedAccountId),
+  });
   const { data: accounts } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
   const { data: contacts } = useQuery({ queryKey: ["contacts", ""], queryFn: () => fetchContacts("") });
 

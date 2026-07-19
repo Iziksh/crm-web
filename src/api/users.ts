@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 
 export interface UserResponse {
   id: number;
@@ -8,10 +8,12 @@ export interface UserResponse {
   enabled: boolean;
   managerId: number | null;
   managerName: string | null;
+  accountId: number | null;
+  accountName: string | null;
 }
 
-export function fetchAllUsers() {
-  return apiFetch<UserResponse[]>("/users?size=500");
+export function fetchAllUsers(accountId?: number | null) {
+  return apiFetch<UserResponse[]>(`/users${buildQuery({ accountId, size: 500 })}`);
 }
 
 export function fetchMyDirectReports() {
@@ -24,6 +26,8 @@ export interface CreateUserRequest {
   password: string;
   roles: string[];
   managerId: number | null;
+  /** Required for non-admin users; omitted for admin-tier users, who stay accountless. */
+  accountId?: number | null;
 }
 
 export function createUser(req: CreateUserRequest) {
@@ -36,6 +40,8 @@ export interface UpdateUserRequest {
   password: string;
   roles: string[];
   managerId: number | null;
+  /** Optional on update — sent only to assign an account, never to clear one. */
+  accountId?: number | null;
 }
 
 export function updateUser(id: number, req: UpdateUserRequest) {

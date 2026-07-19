@@ -57,6 +57,19 @@
   color: var(--color-text);
 }
 
+.time-clock-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--status-lost-soft);
+  color: var(--status-lost);
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .time-clock-buttons {
   display: flex;
   gap: 10px;

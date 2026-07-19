@@ -1,0 +1,12 @@
+.account-addons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Several addons share one cell, so drop the pill's list-wide min-width. */
+.account-addons .status-pill {
+  min-width: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+}

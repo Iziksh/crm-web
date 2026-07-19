@@ -44,6 +44,7 @@
   overflow-x: auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .ts-table {
@@ -57,6 +58,7 @@
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--color-text-faint);
   background: var(--color-bg);
   padding: 8px 12px;
@@ -77,6 +79,10 @@
   background: var(--status-qualified-soft);
 }
 
+.ts-table tbody tr:not(.ts-holiday):hover td {
+  background: var(--color-bg);
+}
+
 .ts-chip {
   display: inline-block;
   background: var(--color-surface);
@@ -85,10 +91,43 @@
   padding: 2px 8px;
   margin-right: 4px;
   font-size: 12px;
+  font-weight: 600;
   color: var(--color-text-muted);
 }
 
+.ts-chip[data-tone="blue"] {
+  background: var(--status-new-soft);
+  color: var(--status-new);
+  border-color: transparent;
+}
+.ts-chip[data-tone="orange"] {
+  background: var(--status-contacted-soft);
+  color: var(--status-contacted);
+  border-color: transparent;
+}
+.ts-chip[data-tone="purple"] {
+  background: var(--status-qualified-soft);
+  color: var(--status-qualified);
+  border-color: transparent;
+}
+.ts-chip[data-tone="green"] {
+  background: var(--status-won-soft);
+  color: var(--status-won);
+  border-color: transparent;
+}
+.ts-chip[data-tone="red"] {
+  background: var(--status-lost-soft);
+  color: var(--status-lost);
+  border-color: transparent;
+}
+.ts-chip[data-tone="gray"] {
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  border-color: transparent;
+}
+
 .ts-chip-holiday {
+  background: var(--color-surface);
   color: var(--status-qualified);
   border-color: var(--status-qualified);
 }
@@ -112,6 +151,7 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .ts-summary-block {
@@ -119,6 +159,27 @@
   flex-direction: column;
   gap: 2px;
   min-width: 120px;
+  padding-left: 10px;
+  border-left: 3px solid var(--color-border);
+}
+
+.ts-summary-block[data-tone="blue"] {
+  border-left-color: var(--status-new);
+}
+.ts-summary-block[data-tone="orange"] {
+  border-left-color: var(--status-contacted);
+}
+.ts-summary-block[data-tone="purple"] {
+  border-left-color: var(--status-qualified);
+}
+.ts-summary-block[data-tone="green"] {
+  border-left-color: var(--status-won);
+}
+.ts-summary-block[data-tone="red"] {
+  border-left-color: var(--status-lost);
+}
+.ts-summary-block[data-tone="gray"] {
+  border-left-color: var(--color-text-faint);
 }
 
 .ts-summary-label {

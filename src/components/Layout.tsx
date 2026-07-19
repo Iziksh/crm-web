@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Sidebar } from "./Sidebar";
+import { AccountSelector } from "./AccountSelector";
 import "./Layout.css";
 
 const RTL_PREVIEW_KEY = "crm.rtlPreview";
@@ -37,11 +38,14 @@ export function Layout({
               <h1>{title}</h1>
               {subtitle && <p>{subtitle}</p>}
             </div>
-            {rtlToggle && (
-              <button type="button" className="btn btn-secondary btn-small" onClick={toggleDir}>
-                {dir === "ltr" ? "Preview RTL" : "Preview LTR"}
-              </button>
-            )}
+            <div className="app-header-tools">
+              <AccountSelector />
+              {rtlToggle && (
+                <button type="button" className="btn btn-secondary btn-small" onClick={toggleDir}>
+                  {dir === "ltr" ? "Preview RTL" : "Preview LTR"}
+                </button>
+              )}
+            </div>
           </div>
         </header>
         <main className="app-content" dir={rtlToggle ? dir : undefined}>{children}</main>

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AccountScopeProvider } from "./context/AccountScopeContext";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { VerifyRegistrationPage } from "./pages/VerifyRegistrationPage";
@@ -46,48 +47,50 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/verify-registration" element={<VerifyRegistrationPage />} />
-            <Route path="/accept-invite/:token?" element={<AcceptInvitePage />} />
-            <Route path="/verify-invite" element={<VerifyInvitePage />} />
+        <AccountScopeProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/verify-registration" element={<VerifyRegistrationPage />} />
+              <Route path="/accept-invite/:token?" element={<AcceptInvitePage />} />
+              <Route path="/verify-invite" element={<VerifyInvitePage />} />
 
-            <Route element={<RequireAuth />}>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/leads" element={<LeadsPage />} />
-              <Route path="/accounts" element={<AccountsPage />} />
-              <Route path="/contacts" element={<ContactsPage />} />
-              <Route path="/opportunities" element={<OpportunitiesPage />} />
-              <Route path="/products" element={<ProductsPage />} />
-              <Route path="/account-groups" element={<AccountGroupsPage />} />
-              <Route path="/addresses" element={<AddressesPage />} />
-              <Route path="/activities" element={<ActivitiesPage />} />
-              <Route path="/forecast" element={<ForecastPage />} />
-              <Route path="/quotes" element={<QuotesPage />} />
-              <Route path="/sales-orders" element={<SalesOrdersPage />} />
-              <Route path="/contracts" element={<ContractsPage />} />
-              <Route path="/payment-requests" element={<PaymentRequestsPage />} />
-              <Route path="/payment-request-document/:id" element={<PaymentRequestDocumentPage />} />
-              <Route path="/tax-documents" element={<TaxDocumentsPage />} />
-              <Route path="/users" element={<UsersPage />} />
-              <Route path="/workspaces" element={<WorkspacesPage />} />
-              <Route path="/scheduled-tasks" element={<ScheduledTasksPage />} />
-              <Route path="/subscriptions" element={<SubscriptionsPage />} />
-              <Route path="/saved-searches" element={<SavedSearchesPage />} />
-              <Route path="/time-clock" element={<TimeClockPage />} />
-              <Route path="/attendance-calendar" element={<AttendanceCalendarPage />} />
-              <Route path="/timesheet" element={<TimesheetPage />} />
-              <Route path="/monthly-summary" element={<MonthlySummaryPage />} />
-              <Route path="/calendar" element={<CalendarPage />} />
-              <Route path="/my-profile" element={<MyProfilePage />} />
-              <Route path="/attendance-corrections" element={<AttendanceCorrectionsPage />} />
-            </Route>
+              <Route element={<RequireAuth />}>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/leads" element={<LeadsPage />} />
+                <Route path="/accounts" element={<AccountsPage />} />
+                <Route path="/contacts" element={<ContactsPage />} />
+                <Route path="/opportunities" element={<OpportunitiesPage />} />
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/account-groups" element={<AccountGroupsPage />} />
+                <Route path="/addresses" element={<AddressesPage />} />
+                <Route path="/activities" element={<ActivitiesPage />} />
+                <Route path="/forecast" element={<ForecastPage />} />
+                <Route path="/quotes" element={<QuotesPage />} />
+                <Route path="/sales-orders" element={<SalesOrdersPage />} />
+                <Route path="/contracts" element={<ContractsPage />} />
+                <Route path="/payment-requests" element={<PaymentRequestsPage />} />
+                <Route path="/payment-request-document/:id" element={<PaymentRequestDocumentPage />} />
+                <Route path="/tax-documents" element={<TaxDocumentsPage />} />
+                <Route path="/users" element={<UsersPage />} />
+                <Route path="/workspaces" element={<WorkspacesPage />} />
+                <Route path="/scheduled-tasks" element={<ScheduledTasksPage />} />
+                <Route path="/subscriptions" element={<SubscriptionsPage />} />
+                <Route path="/saved-searches" element={<SavedSearchesPage />} />
+                <Route path="/time-clock" element={<TimeClockPage />} />
+                <Route path="/attendance-calendar" element={<AttendanceCalendarPage />} />
+                <Route path="/timesheet" element={<TimesheetPage />} />
+                <Route path="/monthly-summary" element={<MonthlySummaryPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/my-profile" element={<MyProfilePage />} />
+                <Route path="/attendance-corrections" element={<AttendanceCorrectionsPage />} />
+              </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
+        </AccountScopeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

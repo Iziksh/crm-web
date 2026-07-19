@@ -20,6 +20,7 @@ import {
   type ContactStatus,
 } from "../api/contacts";
 import { fetchAccounts } from "../api/accounts";
+import { useAccountScope } from "../context/AccountScopeContext";
 
 const EMPTY: ContactRequest = {
   firstName: "",
@@ -43,9 +44,11 @@ export function ContactsPage() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<ContactRequest>(EMPTY);
 
+  const { accountId: scopedAccountId } = useAccountScope();
+
   const { data: contacts, isLoading, isError } = useQuery({
-    queryKey: ["contacts", search],
-    queryFn: () => fetchContacts(search),
+    queryKey: ["contacts", search, scopedAccountId],
+    queryFn: () => fetchContacts(search, scopedAccountId),
   });
   const { data: accounts } = useQuery({ queryKey: ["accounts", ""], queryFn: () => fetchAccounts("") });
 

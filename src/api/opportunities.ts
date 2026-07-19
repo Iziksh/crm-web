@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch, buildQuery } from "./client";
 
 export type OpportunityStage = "PROSPECTING" | "QUALIFICATION" | "PROPOSAL" | "NEGOTIATION" | "WON" | "LOST";
 
@@ -30,8 +30,8 @@ export interface OpportunityRequest {
   contactId: number | null;
 }
 
-export function fetchOpportunities() {
-  return apiFetch<OpportunityResponse[]>("/opportunities?size=200");
+export function fetchOpportunities(accountId?: number | null) {
+  return apiFetch<OpportunityResponse[]>(`/opportunities${buildQuery({ accountId, size: 200 })}`);
 }
 
 export function createOpportunity(req: OpportunityRequest) {

@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Lock, Send, Download } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { Modal } from "../components/Modal";
 import { StatusPill, type PillTone } from "../components/StatusPill";
+import { ATTENDANCE_REPORT_TYPE_META } from "../lib/statusMeta";
 import { useAuth } from "../context/AuthContext";
 import { hasCompanyWideAttendanceAccess } from "../lib/roles";
 import {
@@ -57,7 +58,7 @@ export function TimesheetPage() {
   const [showReject, setShowReject] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
 
-  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: fetchAllUsers, enabled: isAdmin });
+  const { data: allUsers } = useQuery({ queryKey: ["all-users"], queryFn: () => fetchAllUsers(), enabled: isAdmin });
   const { data: directReports } = useQuery({ queryKey: ["my-direct-reports"], queryFn: fetchMyDirectReports });
 
   const targetUserId = selectedUserId ?? user?.id ?? null;
@@ -176,7 +177,7 @@ export function TimesheetPage() {
                     <td>
                       {day.isHoliday && <span className="ts-chip ts-chip-holiday">{day.holidayName}</span>}
                       {day.reports.map((r) => (
-                        <span className="ts-chip" key={r.id}>
+                        <span className="ts-chip" data-tone={ATTENDANCE_REPORT_TYPE_META[r.reportType]?.tone ?? "gray"} key={r.id}>
                           {REPORT_TYPE_LABEL[r.reportType] ?? r.reportType}
                           {r.reportType === "PRESENCE" && r.entryTime && r.exitTime
                             ? ` ${r.entryTime.slice(0, 5)}–${r.exitTime.slice(0, 5)}`
@@ -200,26 +201,26 @@ export function TimesheetPage() {
           </div>
 
           <div className="ts-summary">
-            <div className="ts-summary-block">
+            <div className="ts-summary-block" data-tone="blue">
               <span className="ts-summary-label">Worked / Standard</span>
               <span className="ts-summary-value">{formatMinutes(calendar.totalWorkedMinutes)} / {formatMinutes(calendar.totalStandardMinutes)}</span>
             </div>
-            <div className="ts-summary-block">
+            <div className="ts-summary-block" data-tone="purple">
               <span className="ts-summary-label">Regular</span>
               <span className="ts-summary-value">{formatMinutes(calendar.totalRegularMinutes)}</span>
             </div>
-            <div className="ts-summary-block">
+            <div className="ts-summary-block" data-tone="orange">
               <span className="ts-summary-label">OT 125% / 150%</span>
               <span className="ts-summary-value">{formatMinutes(calendar.totalOvertime125Minutes)} / {formatMinutes(calendar.totalOvertime150Minutes)}</span>
             </div>
-            <div className="ts-summary-block">
+            <div className="ts-summary-block" data-tone={calendar.totalDeltaMinutes < 0 ? "red" : "green"}>
               <span className="ts-summary-label">Surplus / Deficit</span>
               <span className={"ts-summary-value " + (calendar.totalDeltaMinutes < 0 ? "ts-negative" : "ts-positive")}>
                 {calendar.totalDeltaMinutes >= 0 ? "+" : ""}{formatMinutes(calendar.totalDeltaMinutes)}
               </span>
             </div>
             {Object.entries(dayTypeCounts).map(([type, count]) => (
-              <div className="ts-summary-block" key={type}>
+              <div className="ts-summary-block" data-tone={ATTENDANCE_REPORT_TYPE_META[type]?.tone ?? "gray"} key={type}>
                 <span className="ts-summary-label">{REPORT_TYPE_LABEL[type] ?? type} days</span>
                 <span className="ts-summary-value">{count}</span>
               </div>

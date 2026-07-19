@@ -15,15 +15,20 @@ export interface AttendanceResponse {
   approvalStatus: AttendanceApprovalStatus | null;
 }
 
-export function punchIn(note: string) {
+export function punchIn(note: string, force = false) {
   return apiFetch<AttendanceResponse>("/attendance/punch-in", {
     method: "POST",
-    body: JSON.stringify({ note: note || null, source: "MANUAL" }),
+    body: JSON.stringify({ note: note || null, source: "MANUAL", force }),
   });
 }
 
 export function punchOut() {
   return apiFetch<AttendanceResponse>("/attendance/punch-out", { method: "POST" });
+}
+
+/** Records a clock-out with no matching clock-in — an incomplete line with no total. */
+export function createClockOutLine() {
+  return apiFetch<AttendanceResponse>("/attendance/clock-out-line", { method: "POST" });
 }
 
 export async function fetchActiveSession(userId: number): Promise<AttendanceResponse | null> {
